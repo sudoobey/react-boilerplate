@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "description": "An example of a universally-rendered Redux application",
   "scripts": {
-    "start": "node server/index.js"
+    "start": "node server/index.js",
+    "test": "node_modules/.bin/mocha -R spec ./server/tests/test-*.js"
   },
   "repository": {
     "type": "git",
@@ -16,11 +17,20 @@
   "homepage": "http://redux.js.org",
   "dependencies": {
     "koa": "^2.0.0",
-    "koa-bodyparser": "^3.1.0"
+    "koa-bodyparser": "^3.1.0",
+    "koa-logger": "^2.0.0",
+    "koa-mount": "^2.0.0",
+    "koa-qs": "^2.0.0",
+    "koa-router": "^7.0.1",
+    "require-dir": "^0.3.0"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
     "eslint": "^2.11.1",
     "eslint-config-google": "^0.5.0",
+    "koa-static": "^3.0.0",
+    "mocha": "^2.5.3",
+    "supertest-as-promised": "^3.1.0",
     "webpack": "^1.13.1",
     "webpack-dev-middleware": "^1.4.0",
     "webpack-hot-middleware": "^2.9.1"

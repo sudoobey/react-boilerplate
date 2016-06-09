@@ -1,6 +1,7 @@
 const path = require('path');
 const requireDir = require('require-dir');
 
+const http = require('http');
 const Koa = require('koa');
 const Router = require('koa-router');
 const mount = require('koa-mount');
@@ -21,7 +22,7 @@ app.use(logger());
 app.proxy = true;
 
 // Routre controllers
-const controllers = requireDir('./server/controllers');
+const controllers = requireDir('./controllers');
 let apiRouter = new Router({prefix: '/api'});
 for (let name of Object.keys(controllers)) {
     let controller = controllers[name];
@@ -40,11 +41,15 @@ app.use(mount(
 ));
 app.use(serve(path.join(__dirname, '/client')), {defer: true});
 
+const server = http.createServer(app.callback());
+
 // start server
 if (!module.parent) {
-    app.listen(
+    server.listen(
         5555,
         '0.0.0.0',
         () => console.log('Server listening on 5555')
     );
 }
+
+module.exports = server;
