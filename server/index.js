@@ -1,3 +1,6 @@
+require('babel-register')({
+    extensions: ['.jsx']
+});
 const path = require('path');
 const requireDir = require('require-dir');
 
@@ -6,6 +9,9 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const mount = require('koa-mount');
 const app = new Koa();
+const App = require('../client/components/App/App.jsx').default;
+const ReactDom = require('react-dom/server');
+const React = require('react');
 
 // body parser
 const bodyParser = require('koa-bodyparser');
@@ -23,7 +29,9 @@ app.proxy = true;
 
 // Routre controllers
 const controllers = requireDir('./controllers');
-let apiRouter = new Router({prefix: '/api'});
+let apiRouter = new Router({
+    prefix: '/api'
+});
 for (let name of Object.keys(controllers)) {
     let controller = controllers[name];
     controller.prefix(`/${name}`);
@@ -39,8 +47,17 @@ app.use(mount(
     '/node_modules',
     serve(path.join(__dirname, '/node_modules'))
 ));
-app.use(serve(path.join(__dirname, '/client')), {defer: true});
-
+app.use(serve(path.join(__dirname, '/client')), {
+    defer: true
+});
+app.use(mount(
+    '/',
+    (ctx, next) => (
+        ctx.body = renderFullPage(
+            ReactDom.renderToString(
+                React.createElement(App, null, null)), {})
+    )
+));
 const server = http.createServer(app.callback());
 
 // start server
@@ -50,6 +67,24 @@ if (!module.parent) {
         '0.0.0.0',
         () => console.log('Server listening on 5555')
     );
+}
+
+function renderFullPage(html, preloadedState) {
+    return `
+    <!doctype html>
+    <html>
+      <head>
+        <title>Redux Universal Example</title>
+      </head>
+      <body>
+        <div id="app">${html}</div>
+        <script>
+          window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState)}
+        </script>
+        <script src="/static/bundle.js"></script>
+      </body>
+    </html>
+    `;
 }
 
 module.exports = server;
