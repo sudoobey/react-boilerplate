@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
@@ -37,22 +38,22 @@ module.exports = {
             loader: 'babel',
             exclude: /node_modules/,
             include: __dirname
-            // query: {
-            //     presets: ['es2015', 'stage-0']
-            // }
+                // query: {
+                //     presets: ['es2015', 'stage-0']
+                // }
         }, {
             test: /\.jsx$/,
             loader: 'babel',
             exclude: /node_modules/,
             include: __dirname
-            // query: {
-            //     presets: ['es2015', 'react', 'stage-0']
-            // }
+                // query: {
+                //     presets: ['es2015', 'react', 'stage-0']
+                // }
         }, {
             test: /\.css$/,
             loader: ExtractTextPlugin.extract(
-                'style-loader',
-                'css-loader?modules',
+                'isomorphic-style-loader',
+                'css-loader?modules&localIdentName=[name]_[local]_[hash:base64:3]',
                 'postcss-loader')
         }]
     },

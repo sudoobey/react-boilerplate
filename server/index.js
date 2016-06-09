@@ -7,7 +7,6 @@ const requireDir = require('require-dir');
 const http = require('http');
 const Koa = require('koa');
 const Router = require('koa-router');
-const mount = require('koa-mount');
 const app = new Koa();
 const App = require('../client/components/App/App.jsx').default;
 const ReactDom = require('react-dom/server');
@@ -43,21 +42,19 @@ app.use(apiRouter.routes(), apiRouter.allowedMethods());
 let staticRoute = new Router();
 let serve = require('koa-static');
 app.use(staticRoute.routes(), staticRoute.allowedMethods());
-app.use(mount(
-    '/node_modules',
-    serve(path.join(__dirname, '/node_modules'))
-));
-app.use(serve(path.join(__dirname, '/client')), {
+
+app.use(serve(path.resolve('client-dist')), {
     defer: true
 });
-app.use(mount(
-    '/',
-    (ctx, next) => (
-        ctx.body = renderFullPage(
-            ReactDom.renderToString(
-                React.createElement(App, null, null)), {})
-    )
-));
+let rootRoute = new Router();
+rootRoute.get('/', (ctx, next) => {
+    ctx.body = renderFullPage(
+        ReactDom.renderToString(
+            React.createElement(App, null, null)), {});
+    return next();
+});
+app.use(rootRoute.routes(), rootRoute.allowedMethods());
+
 const server = http.createServer(app.callback());
 
 // start server
@@ -81,7 +78,7 @@ function renderFullPage(html, preloadedState) {
         <script>
           window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState)}
         </script>
-        <script src="/static/bundle.js"></script>
+        <script src="/bundle.js"></script>
       </body>
     </html>
     `;
