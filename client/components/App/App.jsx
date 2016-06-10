@@ -3,7 +3,12 @@ import React from 'react';
 
 export default class App extends React.Component {
     render() {
-        return <div>Hello World</div>;
-        // return <div className={style.app}>Hello World</div>;
+        return (
+            <div>
+                <div>Hello World</div>
+                <div>{this.props.children}</div>
+            </div>
+        );
+        // return <div>Hello World</div>;
     }
 }

@@ -7,7 +7,7 @@ module.exports = {
     devtool: 'inline-source-map',
     entry: [
         'webpack-hot-middleware/client',
-        './client/index.js'
+        './client/index.jsx'
     ],
     output: {
         path: path.join(__dirname, 'client-dist'),
@@ -30,6 +30,9 @@ module.exports = {
         alias: {
             'react': 'react-lite',
             'react-dom': 'react-lite'
+        },
+        resolve: {
+            extensions: ['.js', '.jsx', '']
         }
     },
     module: {
