@@ -42,12 +42,17 @@ module.exports = {
             test: /\.js$/,
             loader: 'babel',
             exclude: /node_modules/,
-            include: __dirname
+            include: __dirname,
+            query: {
+                presets: ["es2015", "react", "stage-0"],
+                plugins: []
+            }
         }, {
             test: /\.jsx$/,
             loader: 'babel',
             exclude: /node_modules/,
             query: {
+                presets: ["es2015", "react", "stage-0"],
                 plugins: []
             },
             include: __dirname

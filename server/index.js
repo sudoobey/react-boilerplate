@@ -1,6 +1,16 @@
 require('babel-register')({
-    extensions: ['.jsx', '.css']
+    extensions: ['.jsx', '.css'],
+    presets: ["es2015", "react", "stage-0"],
+    plugins: [
+        [
+            "css-modules-transform", {
+                "generateScopedName": "[name]_[local]_[hash:base64:5]",
+                "extensions": [".css"]
+            }
+        ]
+    ]
 });
+
 const path = require('path');
 const requireDir = require('require-dir');
 
