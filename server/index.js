@@ -1,5 +1,5 @@
 require('babel-register')({
-    extensions: ['.jsx']
+    extensions: ['.jsx', '.css']
 });
 const path = require('path');
 const requireDir = require('require-dir');
