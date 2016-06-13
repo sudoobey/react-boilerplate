@@ -4,7 +4,7 @@ require('babel-register')({
     plugins: [
         [
             "css-modules-transform", {
-                "generateScopedName": "[name]_[local]_[hash:base64:5]",
+                "generateScopedName": "[name]-[local]-[hash:base64:5]",
                 "extensions": [".css"]
             }
         ]
@@ -16,7 +16,6 @@ const requireDir = require('require-dir');
 
 const http = require('http');
 const Koa = require('koa');
-const fs = require('fs');
 const Router = require('koa-router');
 const app = new Koa();
 const App = require('../client/components/Router/Router.jsx').default;
@@ -61,7 +60,6 @@ app.use(serve(path.resolve('client-dist')), {
 let rootRoute = new Router();
 rootRoute.get('*', (ctx, next) => {
     console.log('ctxurl:', ctx.url);
-    console.log('url:', this.url);
     ReactRouter.match({
         routes,
         location: ctx.url
@@ -103,17 +101,17 @@ if (!module.parent) {
 function renderFullPage(html) {
     console.log(html);
     return `<!doctype html>
-    <html>
-      <head>
+<html>
+    <head>
         <title>Redux Universal Example</title>
-        <link rel="stylesheet" href="/main.css" charset="utf-8">
-      </head>
-      <body>
+        <link rel="stylesheet" href="main.css" charset="utf-8">
+    </head>
+    <body>
         <div id="app">${html}</div>
-        <script src="/bundle.js"></script>
-      </body>
-    </html>
-`.replace('${html}', html);
+        <script src="bundle.js"></script>
+    </body>
+</html>
+`;
 }
 
 module.exports = server;
