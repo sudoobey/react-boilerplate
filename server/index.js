@@ -13,6 +13,7 @@ require('babel-register')({
     ]
 });
 
+const isProd = process.env.NODE_ENV !== 'development';
 const path = require('path');
 const requireDir = require('require-dir');
 
@@ -32,11 +33,13 @@ app.use(bodyParser());
 // parse qs
 require('koa-qs')(app);
 
-const compress = require('koa-compress');
-app.use(compress({
-    threshold: 2048,
-    flush: require('zlib').Z_SYNC_FLUSH
-}));
+if (isProd) {
+    const compress = require('koa-compress');
+    app.use(compress({
+        threshold: 2048,
+        flush: require('zlib').Z_SYNC_FLUSH
+    }));
+}
 
 // logger
 const logger = require('koa-logger');
@@ -62,7 +65,9 @@ let staticRoute = new Router();
 let serve = require('koa-static');
 app.use(staticRoute.routes(), staticRoute.allowedMethods());
 
-app.use(serve(path.resolve('client-dist')), {defer: true});
+if (isProd) {
+    app.use(serve(path.resolve('client-dist')), {defer: true});
+}
 let rootRoute = new Router();
 rootRoute.get('*', (ctx, next) => {
     ReactRouter.match({
@@ -84,11 +89,9 @@ rootRoute.get('*', (ctx, next) => {
                     React.createElement(
                         ReactRouter.RouterContext, renderProps, App)), {}));
         } else {
-            ctx.status = 404;
-            ctx.body = 'Not found';
+            return next();
         }
     });
-    return next();
 });
 app.use(rootRoute.routes(), rootRoute.allowedMethods());
 
@@ -117,4 +120,4 @@ function renderFullPage(html) {
 </html>`;
 }
 
-module.exports = server;
+module.exports = {server, app};

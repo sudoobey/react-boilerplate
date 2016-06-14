@@ -1,7 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const isProd = process.env.NODE_ENV === 'production';
+const isProd = process.env.NODE_ENV !== 'development';
 
 const STYLE_NAME_TEMPLATE = '[name]_[local]_[hash:base64:5]';
 
@@ -10,19 +10,36 @@ let PLUGINS = [
         'process.env.NODE_ENV': JSON.stringify(
             process.env.NODE_ENV || 'development')
     }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.DedupePlugin(),
     new ExtractTextPlugin('main.css', {
         allChunks: true
     })
 ];
 if (isProd) {
     PLUGINS.push(
+        new webpack.optimize.DedupePlugin(),
         new webpack.optimize.UglifyJsPlugin({
             compressor: {warnings: false},
             minimize: true
         })
     );
+} else {
+    PLUGINS.push(
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoErrorsPlugin()
+    );
+}
+
+let ENTRY = ['./view/client.jsx'];
+if (!isProd) {
+    ENTRY.push('webpack-hot-middleware/client');
+}
+
+let ALIAS;
+if (isProd) {
+    ALIAS = {
+        'react': 'react-lite',
+        'react-dom': 'react-lite'
+    };
 }
 
 module.exports = {
@@ -30,45 +47,48 @@ module.exports = {
     STYLE_NAME_TEMPLATE: STYLE_NAME_TEMPLATE,
 
     devtool: 'inline-source-map',
-    entry: ['./view/client.jsx'],
+    entry: ENTRY,
     output: {
         path: path.join(__dirname, 'client-dist'),
-        filename: 'bundle.js'
+        filename: 'bundle.js',
+        publicPath: '/'
     },
     plugins: PLUGINS,
     resolve: {
-        alias: {
-            'react': 'react-lite',
-            'react-dom': 'react-lite'
-        },
+        alias: ALIAS,
         resolve: {
             extensions: ['.js', '.jsx', '']
         }
     },
     module: {
-        loaders: [{
-            test: /\.js$/,
-            loader: 'babel',
-            exclude: /node_modules/,
-            include: __dirname,
-            query: {
-                presets: ['es2015', 'stage-0']
-            }
-        }, {
-            test: /\.jsx$/,
-            loader: 'babel',
-            exclude: /node_modules/,
-            query: {
-                presets: ['es2015', 'react', 'stage-0']
-            },
-            include: __dirname
-        }, {
-            test: /\.css$/,
-            loader: ExtractTextPlugin.extract(
+        loaders: [
+            {test: /\.json$/, loader: 'json-loader'},
+            {
+                test: /\.js$/,
+                loader: 'babel',
+                exclude: /node_modules/,
+                include: __dirname,
+                query: {
+                    presets: ['es2015', 'stage-0']
+                }
+            }, {
+                test: /\.jsx$/,
+                loaders: [
+                    {loader: 'react-hot'},
+                    {loader: 'babel', query: {
+                        presets: ['es2015', 'react', 'stage-0']
+                    }}
+                ],
+                exclude: /node_modules/,
+                include: __dirname
+            }, {
+                test: /\.css$/,
+                loader: ExtractTextPlugin.extract(
                 'style-loader',
                 `css-loader?modules&localIdentName=${STYLE_NAME_TEMPLATE}`,
                 'postcss-loader')
-        }]
+            }
+        ]
     },
     postcss: function() {
         return [

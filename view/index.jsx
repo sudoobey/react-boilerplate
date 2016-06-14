@@ -6,6 +6,9 @@ import {syncHistoryWithStore, routerReducer} from 'react-router-redux';
 
 import routes from './router.jsx';
 const isBrowser = typeof window !== 'undefined';
+if (module.hot) {
+    module.hot.accept();
+}
 
 const DEFAULT_APP_STATE = {};
 

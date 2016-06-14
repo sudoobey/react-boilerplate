@@ -1,10 +1,10 @@
 const request = require('supertest-as-promised');
-const app = require('../');
+const app = require('../').server;
 
 describe('main server', function() {
     it('is running', () =>
         request(app)
             .get('/')
-            .expect(404)
+            .expect(200)
     );
 });
