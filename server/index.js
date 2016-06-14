@@ -1,11 +1,13 @@
+const webpackConfig = require('../webpack.config');
 require('babel-register')({
     extensions: ['.jsx', '.css'],
-    presets: ["es2015", "react", "stage-0"],
+    presets: ['es2015', 'react', 'stage-0'],
     plugins: [
         [
-            "css-modules-transform", {
-                "generateScopedName": "[name]-[local]-[hash:base64:5]",
-                "extensions": [".css"]
+            'css-modules-transform',
+            {
+                generateScopedName: webpackConfig.STYLE_NAME_TEMPLATE,
+                extensions: ['.css']
             }
         ]
     ]
@@ -54,24 +56,21 @@ let staticRoute = new Router();
 let serve = require('koa-static');
 app.use(staticRoute.routes(), staticRoute.allowedMethods());
 
-app.use(serve(path.resolve('client-dist')), {
-    defer: true
-});
+app.use(serve(path.resolve('client-dist')), {defer: true});
 let rootRoute = new Router();
 rootRoute.get('*', (ctx, next) => {
-    console.log('ctxurl:', ctx.url);
     ReactRouter.match({
         routes,
         location: ctx.url
     }, (error, redirectLocation, renderProps) => {
         if (error) {
             ctx.status = 500;
-            ctx.body = "Что-то пошло не так";
+            ctx.body = 'Что-то пошло не так';
         } else if (redirectLocation) {
             ctx.redirect = 302;
         } else if (renderProps) {
             // You can also check renderProps.components or renderProps.routes for
-            // your "not found" component or route respectively, and send a 404 as
+            // your 'not found' component or route respectively, and send a 404 as
             // below, if you're using a catch-all route.
             ctx.status = 200;
             ctx.body = (renderFullPage(
@@ -99,19 +98,17 @@ if (!module.parent) {
 }
 
 function renderFullPage(html) {
-    console.log(html);
     return `<!doctype html>
 <html>
     <head>
         <title>Redux Universal Example</title>
-        <link rel="stylesheet" href="main.css" charset="utf-8">
+        <link rel='stylesheet' href='main.css' charset='utf-8'>
     </head>
     <body>
-        <div id="app">${html}</div>
-        <script src="bundle.js"></script>
+        <div id='app'>${html}</div>
+        <script src='bundle.js'></script>
     </body>
-</html>
-`;
+</html>`;
 }
 
 module.exports = server;

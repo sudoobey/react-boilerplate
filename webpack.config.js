@@ -3,7 +3,12 @@ const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+const STYLE_NAME_TEMPLATE = '[name]_[local]_[hash:base64:5]';
+
 module.exports = {
+    // constants
+    STYLE_NAME_TEMPLATE: STYLE_NAME_TEMPLATE,
+
     devtool: 'inline-source-map',
     entry: [
         // 'webpack-hot-middleware/client',
@@ -60,7 +65,7 @@ module.exports = {
             test: /\.css$/,
             loader: ExtractTextPlugin.extract(
                 'style-loader',
-                'css-loader?modules&localIdentName=[name]_[local]_[hash:base64:5]',
+                `css-loader?modules&localIdentName=${STYLE_NAME_TEMPLATE}`,
                 'postcss-loader')
         }]
     },

@@ -1,10 +1,13 @@
+import App from '../client/components/App/App.jsx';
+import About from '../client/components/About/About.jsx';
+
 export default {
     path: '/',
-    component: require('../client/components/App/App.jsx').default,
+    component: App,
     childRoutes: [
         {
             path: 'about',
-            component: require('../client/components/About/About.jsx').default
+            component: About
         }
     ]
 };
