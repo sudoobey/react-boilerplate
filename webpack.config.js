@@ -71,6 +71,7 @@ module.exports = {
     },
     postcss: function() {
         return [
+            require('postcss-cssnext')(),
             require('autoprefixer')
         ];
     }

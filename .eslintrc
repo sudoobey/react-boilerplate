@@ -1,7 +1,11 @@
 {
   "env": {
     "node": true,
-    "browser": true
+    "browser": true,
+    "es6": true
+  },
+  "ecmaFeatures": {
+    "jsx": true,
   },
   extends: "google",
   "globals": {
@@ -15,7 +19,8 @@
     "indent": [2, 4, {"SwitchCase": 1}],
     "generator-star-spacing": 0,
     "require-jsdoc": 0,
-    "arrow-parens": 0
+    "arrow-parens": 0,
+    "react/jsx-uses-vars": 1
   },
   "plugins": [
     "react"
