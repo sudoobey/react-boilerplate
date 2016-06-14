@@ -4,7 +4,8 @@
   "description": "An example of a universally-rendered Redux application",
   "scripts": {
     "start": "node server/index.js",
-    "test": "node_modules/.bin/mocha -R spec ./server/tests/test-*.js"
+    "test": "node_modules/.bin/mocha -R spec ./server/tests/test-*.js",
+    "build": "NODE_ENV=production node_modules/.bin/webpack"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,7 @@
     "babel-register": "^6.9.0",
     "koa": "^2.0.0",
     "koa-bodyparser": "^3.1.0",
+    "koa-compress": "^2.0.0",
     "koa-logger": "^2.0.0",
     "koa-mount": "^2.0.0",
     "koa-qs": "^2.0.0",

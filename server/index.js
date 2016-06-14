@@ -32,6 +32,12 @@ app.use(bodyParser());
 // parse qs
 require('koa-qs')(app);
 
+const compress = require('koa-compress');
+app.use(compress({
+    threshold: 2048,
+    flush: require('zlib').Z_SYNC_FLUSH
+}));
+
 // logger
 const logger = require('koa-logger');
 app.use(logger());
