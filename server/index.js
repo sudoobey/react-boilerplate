@@ -20,10 +20,10 @@ const http = require('http');
 const Koa = require('koa');
 const Router = require('koa-router');
 const app = new Koa();
-const App = require('../client/components/Router/Router.jsx').default;
+const App = require('../view/index.jsx').default;
 const ReactDom = require('react-dom/server');
 const React = require('react');
-const routes = require('../common/router.jsx').default;
+const routes = require('../view/router.jsx').default;
 const ReactRouter = require('react-router');
 // body parser
 const bodyParser = require('koa-bodyparser');

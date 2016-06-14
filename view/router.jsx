@@ -1,5 +1,5 @@
-import App from '../client/components/App/App.jsx';
-import About from '../client/components/About/About.jsx';
+import App from '../view/components/App/App.jsx';
+import About from '../view/components/About/About.jsx';
 
 export default {
     path: '/',

@@ -12,7 +12,7 @@ module.exports = {
     devtool: 'inline-source-map',
     entry: [
         // 'webpack-hot-middleware/client',
-        './client/index.jsx'
+        './view/client.jsx'
     ],
     output: {
         path: path.join(__dirname, 'client-dist'),
