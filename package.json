@@ -28,7 +28,10 @@
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
     "react-lite": "^0.15.14",
+    "react-redux": "^4.4.5",
     "react-router": "^2.4.1",
+    "react-router-redux": "^4.0.5",
+    "redux": "^3.5.2",
     "require-dir": "^0.3.0"
   },
   "devDependencies": {
