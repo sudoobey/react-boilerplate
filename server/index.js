@@ -4,8 +4,7 @@ require('babel-register')({
     presets: ['es2015', 'react', 'stage-0'],
     plugins: [
         [
-            'css-modules-transform',
-            {
+            'css-modules-transform', {
                 generateScopedName: webpackConfig.STYLE_NAME_TEMPLATE,
                 extensions: ['.css']
             }
@@ -66,7 +65,9 @@ let serve = require('koa-static');
 app.use(staticRoute.routes(), staticRoute.allowedMethods());
 
 if (isProd) {
-    app.use(serve(path.resolve('client-dist')), {defer: true});
+    app.use(serve(path.resolve('client-dist')), {
+        defer: true
+    });
 }
 let rootRoute = new Router();
 rootRoute.get('*', (ctx, next) => {
@@ -107,6 +108,23 @@ if (!module.parent) {
 }
 
 function renderFullPage(html) {
+    let hmrcss = `const cssFileName = 'main.css';
+    const originalCallback = window.webpackHotUpdate;
+
+    window.webpackHotUpdate = function(...args) {
+        const links = document.getElementsByTagName("link");
+        for (var i = 0; i < links.length; i++) {
+            const link = links[i];
+            if (link.href.search(cssFileName) !== -1) {
+                let linkHref = link.href;
+                link.href = 'about:blank';
+                link.href = linkHref;
+                originalCallback(...args);
+                return;
+            }
+        }
+    };`;
+
     return `<!doctype html>
 <html>
     <head>
@@ -117,7 +135,13 @@ function renderFullPage(html) {
         <div id='app'>${html}</div>
         <script src='bundle.js'></script>
     </body>
+    <script>
+        ${isProd ? "" : hmrcss}
+    </script>
 </html>`;
 }
 
-module.exports = {server, app};
+module.exports = {
+    server,
+    app
+};

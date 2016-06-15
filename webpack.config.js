@@ -3,7 +3,8 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const isProd = process.env.NODE_ENV !== 'development';
 
-const STYLE_NAME_TEMPLATE = '[name]_[local]_[hash:base64:5]';
+const STYLE_NAME_TEMPLATE = isProd ? '[hash:base64:5]' :
+    '[name]_[local]_[hash:base64:5]';
 
 let PLUGINS = [
     new webpack.DefinePlugin({
@@ -18,14 +19,15 @@ if (isProd) {
     PLUGINS.push(
         new webpack.optimize.DedupePlugin(),
         new webpack.optimize.UglifyJsPlugin({
-            compressor: {warnings: false},
+            compressor: {
+                warnings: false
+            },
             minimize: true
         })
     );
 } else {
     PLUGINS.push(
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoErrorsPlugin()
+        new webpack.HotModuleReplacementPlugin()
     );
 }
 
@@ -42,6 +44,47 @@ if (isProd) {
     };
 }
 
+let LOADERS = [{
+    test: /\.json$/,
+    loader: 'json-loader'
+}, {
+    test: /\.js$/,
+    loader: 'babel',
+    exclude: /node_modules/,
+    include: __dirname,
+    query: {
+        presets: ['es2015', 'stage-0']
+    }
+}, {
+    test: /\.jsx$/,
+    loaders: [{
+        loader: 'react-hot'
+    }, {
+        loader: 'babel',
+        query: {
+            presets: ['es2015', 'react', 'stage-0']
+        }
+    }],
+    exclude: /node_modules/,
+    include: __dirname
+}];
+// if (isProd) {
+LOADERS.push({
+    test: /\.css$/,
+    loader: ExtractTextPlugin.extract(
+            'style-loader',
+            `css-loader?modules&localIdentName=${STYLE_NAME_TEMPLATE}`,
+            'postcss-loader')
+});
+// } else {
+//     LOADERS.push({
+//         test: /\.css$/,
+//         loaders: [
+//             'style-loader',
+//             `css-loader?localIdentName=${STYLE_NAME_TEMPLATE}`,
+//             'postcss-loader']
+//     });
+// }
 module.exports = {
     // constants
     STYLE_NAME_TEMPLATE: STYLE_NAME_TEMPLATE,
@@ -61,39 +104,11 @@ module.exports = {
         }
     },
     module: {
-        loaders: [
-            {test: /\.json$/, loader: 'json-loader'},
-            {
-                test: /\.js$/,
-                loader: 'babel',
-                exclude: /node_modules/,
-                include: __dirname,
-                query: {
-                    presets: ['es2015', 'stage-0']
-                }
-            }, {
-                test: /\.jsx$/,
-                loaders: [
-                    {loader: 'react-hot'},
-                    {loader: 'babel', query: {
-                        presets: ['es2015', 'react', 'stage-0']
-                    }}
-                ],
-                exclude: /node_modules/,
-                include: __dirname
-            }, {
-                test: /\.css$/,
-                loader: ExtractTextPlugin.extract(
-                'style-loader',
-                `css-loader?modules&localIdentName=${STYLE_NAME_TEMPLATE}`,
-                'postcss-loader')
-            }
-        ]
+        loaders: LOADERS
     },
     postcss: function() {
         return [
-            require('postcss-cssnext')(),
-            require('autoprefixer')
+            require('postcss-cssnext')()
         ];
     }
 };
