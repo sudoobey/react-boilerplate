@@ -5,8 +5,8 @@
   "scripts": {
     "start": "node server/index.js",
     "test": "node_modules/.bin/mocha -R spec ./server/tests/test-*.js",
-    "build": "NODE_ENV=production node_modules/.bin/webpack",
-    "dev": "NODE_ENV=development node server/dev-server.js"
+    "build": "cross-env NODE_ENV=production && node_modules/.bin/webpack",
+    "dev": "cross-env NODE_ENV=development && node server/dev-server.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
     "koa": "^2.0.0",
     "koa-bodyparser": "^3.1.0",
     "koa-compress": "^2.0.0",
+    "koa-connect": "^1.0.0",
     "koa-logger": "^2.0.0",
     "koa-mount": "^2.0.0",
     "koa-qs": "^2.0.0",
@@ -48,6 +49,7 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
     "chai": "^3.5.0",
+    "cross-env": "^1.0.8",
     "css-loader": "^0.23.1",
     "es-css-modules": "^1.2.3",
     "eslint": "^2.11.1",
