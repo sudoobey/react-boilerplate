@@ -5,8 +5,9 @@
   "scripts": {
     "start": "node server/server.js",
     "test": "node_modules/.bin/mocha -R spec ./server/tests/test-*.js",
-    "build": "NODE_ENV=production && node_modules/.bin/webpack",
-    "dev": "NODE_ENV=development && node server/server-dev.js"
+    "build": "NODE_ENV=production node_modules/.bin/webpack",
+    "bstart": "NODE_ENV=production node_modules/.bin/webpack && NODE_ENV=production npm start",
+    "dev": "NODE_ENV=development node server/server-dev.js"
   },
   "repository": {
     "type": "git",

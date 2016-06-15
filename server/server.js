@@ -61,9 +61,13 @@ let serve = require('koa-static');
 app.use(staticRoute.routes(), staticRoute.allowedMethods());
 
 if (isProd) {
-    app.use(serve(path.resolve('client-dist')), {
-        defer: true
-    });
+    const mount = require('koa-mount');
+    app.use(
+        mount(
+            '/static',
+            serve(path.resolve('client-dist'))
+        )
+    );
 }
 
 let reactRouter = require('./render-router');
