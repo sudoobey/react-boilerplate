@@ -5,8 +5,8 @@
   "scripts": {
     "start": "node server/index.js",
     "test": "node_modules/.bin/mocha -R spec ./server/tests/test-*.js",
-    "build": "cross-env NODE_ENV=production && node_modules/.bin/webpack",
-    "dev": "cross-env NODE_ENV=development && node server/dev-server.js"
+    "build": "NODE_ENV=production && node_modules/.bin/webpack",
+    "dev": "NODE_ENV=development && node server/dev-server.js"
   },
   "repository": {
     "type": "git",
