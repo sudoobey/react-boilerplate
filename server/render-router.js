@@ -4,6 +4,7 @@ const ReactDom = require('react-dom/server');
 const React = require('react');
 const routes = require('../view/router.jsx').default;
 const ReactRouter = require('react-router');
+const isProd = process.env.NODE_ENV !== 'development';
 
 const fs = require('fs');
 const fileString = fs.readFileSync('./view/index.html').toString();
@@ -27,10 +28,14 @@ renderRouter.get('*', (ctx, next) => {
             // your 'not found' component or route respectively, and send a 404 as
             // below, if you're using a catch-all route.
             ctx.status = 200;
-            ctx.body = (renderFullPage(
-                ReactDom.renderToString(
-                    React.createElement(
-                        ReactRouter.RouterContext, renderProps, App)), {}));
+            if (isProd) {
+                ctx.body = (renderFullPage(
+                    ReactDom.renderToString(
+                        React.createElement(
+                            ReactRouter.RouterContext, renderProps, App)), {}));
+            } else {
+                ctx.body = renderFullPage('development mode >> loading <3');
+            }
         } else {
             return next();
         }

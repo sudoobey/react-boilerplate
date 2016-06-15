@@ -68,7 +68,7 @@ let LOADERS = [{
     exclude: /node_modules/,
     include: __dirname
 }];
-// if (isProd) {
+
 LOADERS.push({
     test: /\.css$/,
     loader: ExtractTextPlugin.extract(
@@ -76,15 +76,7 @@ LOADERS.push({
             `css-loader?modules&localIdentName=${STYLE_NAME_TEMPLATE}`,
             'postcss-loader')
 });
-// } else {
-//     LOADERS.push({
-//         test: /\.css$/,
-//         loaders: [
-//             'style-loader',
-//             `css-loader?localIdentName=${STYLE_NAME_TEMPLATE}`,
-//             'postcss-loader']
-//     });
-// }
+
 module.exports = {
     // constants
     STYLE_NAME_TEMPLATE: STYLE_NAME_TEMPLATE,
