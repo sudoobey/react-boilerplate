@@ -1,7 +1,5 @@
 const co = require('co');
 const webpack = require('webpack');
-const c2k = require('koa-connect');
-const convert = require('koa-convert');
 
 const webpackConfig = require('../webpack.config');
 const compiler = webpack(webpackConfig);
