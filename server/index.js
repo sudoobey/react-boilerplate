@@ -4,8 +4,7 @@ require('babel-register')({
     presets: ['es2015', 'react', 'stage-0'],
     plugins: [
         [
-            'css-modules-transform',
-            {
+            'css-modules-transform', {
                 generateScopedName: webpackConfig.STYLE_NAME_TEMPLATE,
                 extensions: ['.css']
             }
@@ -62,7 +61,9 @@ let serve = require('koa-static');
 app.use(staticRoute.routes(), staticRoute.allowedMethods());
 
 if (isProd) {
-    app.use(serve(path.resolve('client-dist')), {defer: true});
+    app.use(serve(path.resolve('client-dist')), {
+        defer: true
+    });
 }
 
 let reactRouter = require('./render-router');
