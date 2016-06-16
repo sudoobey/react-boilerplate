@@ -7,12 +7,14 @@ const isProd = process.env.NODE_ENV !== 'development';
 const STYLE_NAME_TEMPLATE = isProd ? '[hash:base64:5]' :
     '[name]_[local]_[hash:base64:5]';
 
+const FileNameTemplate = isProd ? '[name].[hash]' : '[name]';
+
 let PLUGINS = [
     new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(
             process.env.NODE_ENV || 'development')
     }),
-    new ExtractTextPlugin('main.css', {
+    new ExtractTextPlugin(FileNameTemplate + '.css', {
         allChunks: true
     })
 ];
@@ -105,7 +107,7 @@ module.exports = {
     entry: ENTRY,
     output: {
         path: path.join(__dirname, 'client-dist'),
-        filename: 'bundle.js',
+        filename: FileNameTemplate + '.js',
         publicPath: isProd ? 'static' : '/'
     },
     plugins: PLUGINS,
