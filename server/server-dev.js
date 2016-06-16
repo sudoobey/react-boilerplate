@@ -21,7 +21,7 @@ const webpackDevMiddleware = require('webpack-dev-middleware')(
 );
 
 const PassThrough = require('stream').PassThrough;
-const app = require('./index').app;
+const app = require('./server').app;
 
 function wrap(expressMiddleware) {
     return co.wrap(function*(ctx, next) {

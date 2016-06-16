@@ -1,5 +1,5 @@
 const request = require('supertest-as-promised');
-const app = require('../').server;
+const app = require('../server').server;
 
 describe('main server', function() {
     it('is running', () =>

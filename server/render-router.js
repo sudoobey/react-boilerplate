@@ -5,9 +5,12 @@ const React = require('react');
 const routes = require('../view/router.jsx').default;
 const ReactRouter = require('react-router');
 const isProd = process.env.NODE_ENV !== 'development';
-
+console.log(process.env.NODE_ENV);
 const fs = require('fs');
-const fileString = fs.readFileSync('./view/index.html').toString();
+const templateFileName = isProd ?
+    './client-dist/index.html' :
+    './view/index-dev.html';
+const fileString = fs.readFileSync(templateFileName).toString();
 function renderFullPage(html) {
     return fileString.replace('${html}', html);
 }
@@ -24,9 +27,6 @@ renderRouter.get('*', (ctx, next) => {
         } else if (redirectLocation) {
             ctx.redirect = 302;
         } else if (renderProps) {
-            // You can also check renderProps.components or renderProps.routes for
-            // your 'not found' component or route respectively, and send a 404 as
-            // below, if you're using a catch-all route.
             ctx.status = 200;
             if (isProd) {
                 ctx.body = (renderFullPage(

@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const isProd = process.env.NODE_ENV !== 'development';
 
 const STYLE_NAME_TEMPLATE = isProd ? '[hash:base64:5]' :
@@ -23,6 +24,17 @@ if (isProd) {
                 warnings: false
             },
             minimize: true
+        }),
+        new HtmlWebpackPlugin({
+            template: './view/index.html.template',
+            minify: {
+                removeAttributeQuotes: true,
+                minifyJS: true,
+                html5: true,
+                collapseWhitespace: true,
+                removeStyleLinkTypeAttributes: true,
+                removeScriptTypeAttributes: true
+            }
         })
     );
 } else {
@@ -67,26 +79,34 @@ let LOADERS = [{
     }],
     exclude: /node_modules/,
     include: __dirname
+}, {
+    test: /\.css$/,
+    loader: ExtractTextPlugin.extract('style-loader',
+        `css-loader?${[
+            'modules',
+            'localIdentName=' + STYLE_NAME_TEMPLATE,
+            isProd ? 'minimize' : null
+        ].join('&')}`,
+        'postcss-loader')
 }];
 
-LOADERS.push({
-    test: /\.css$/,
-    loader: ExtractTextPlugin.extract(
-            'style-loader',
-            `css-loader?modules&localIdentName=${STYLE_NAME_TEMPLATE}`,
-            'postcss-loader')
-});
+if (isProd) {
+    LOADERS.push({
+        test: /\.html.template/,
+        loader: 'html'
+    });
+}
 
 module.exports = {
     // constants
     STYLE_NAME_TEMPLATE: STYLE_NAME_TEMPLATE,
 
-    devtool: 'inline-source-map',
+    devtool: isProd ? 'none' : 'inline-source-map',
     entry: ENTRY,
     output: {
         path: path.join(__dirname, 'client-dist'),
         filename: 'bundle.js',
-        publicPath: '/'
+        publicPath: isProd ? 'static' : '/'
     },
     plugins: PLUGINS,
     resolve: {

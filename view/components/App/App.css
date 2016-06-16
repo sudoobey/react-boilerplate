@@ -4,5 +4,20 @@
 
 .app
 {
-    font-size: 5em;
+    font-size: 2em;
+}
+
+.active
+{
+    text-decoration: underline;
+    color: red;
+}
+
+.btn
+{
+    all: inherit;
+}
+
+:global body {
+    margin: 0;
 }
