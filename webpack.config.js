@@ -108,7 +108,7 @@ module.exports = {
     output: {
         path: path.join(__dirname, 'client-dist'),
         filename: FileNameTemplate + '.js',
-        publicPath: isProd ? 'static' : '/'
+        publicPath: '/static/'
     },
     plugins: PLUGINS,
     resolve: {
