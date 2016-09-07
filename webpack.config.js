@@ -1,128 +1,139 @@
+const IS_PROD = process.env.NODE_ENV !== 'development';
+
 const path = require('path');
+
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const isProd = process.env.NODE_ENV !== 'development';
 
-const STYLE_NAME_TEMPLATE = isProd ? '[hash:base64:5]' :
-    '[name]_[local]_[hash:base64:5]';
+const STYLE_NAME_TEMPLATE = IS_PROD ? '[hash:base64:5]' : '[name]_[local]_[hash:base64:5]';
+const FILENAME_TEMPLATE = IS_PROD ? '[name].[hash]' : '[name]';
+const INDEX_HTML = './view/index.html';
+const OUTPUT_DIR = './client-dist';
 
-const FileNameTemplate = isProd ? '[name].[hash]' : '[name]';
-
-let PLUGINS = [
-    new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(
-            process.env.NODE_ENV || 'development')
-    }),
-    new ExtractTextPlugin(FileNameTemplate + '.css', {
-        allChunks: true
-    })
-];
-if (isProd) {
-    PLUGINS.push(
-        new webpack.optimize.DedupePlugin(),
-        new webpack.optimize.UglifyJsPlugin({
-            compressor: {
-                warnings: false
-            },
-            minimize: true
-        }),
-        new HtmlWebpackPlugin({
-            template: './view/index.html.template',
-            minify: {
-                removeAttributeQuotes: true,
-                minifyJS: true,
-                html5: true,
-                collapseWhitespace: true,
-                removeStyleLinkTypeAttributes: true,
-                removeScriptTypeAttributes: true
-            }
-        })
-    );
-} else {
-    PLUGINS.push(
-        new webpack.HotModuleReplacementPlugin()
-    );
+let entry = ['./view/browser.jsx'];
+if (!IS_PROD) {
+    entry.push('webpack-hot-middleware/client');
 }
 
-let ENTRY = ['./view/client.jsx'];
-if (!isProd) {
-    ENTRY.push('webpack-hot-middleware/client');
-}
-
-let ALIAS;
-if (isProd) {
-    ALIAS = {
+let alias;
+if (IS_PROD) {
+    alias = {
         'react': 'react-lite',
         'react-dom': 'react-lite'
     };
 }
 
-let LOADERS = [{
-    test: /\.json$/,
-    loader: 'json-loader'
-}, {
-    test: /\.js$/,
-    loader: 'babel',
-    exclude: /node_modules/,
-    include: __dirname,
-    query: {
-        presets: ['es2015', 'stage-0']
-    }
-}, {
-    test: /\.jsx$/,
-    loaders: [{
-        loader: 'react-hot'
-    }, {
-        loader: 'babel',
-        query: {
-            presets: ['es2015', 'react', 'stage-0']
+let plugins = [
+    new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify(
+            process.env.NODE_ENV || 'production')
+    }),
+    new ExtractTextPlugin({
+        filename: `${FILENAME_TEMPLATE}.css`,
+        allChunks: true
+    }),
+    new HtmlWebpackPlugin({
+        template: INDEX_HTML,
+        minify: {
+            removeAttributeQuotes: true,
+            minifyJS: true,
+            html5: true,
+            collapseWhitespace: true,
+            removeStyleLinkTypeAttributes: true,
+            removeScriptTypeAttributes: true
         }
-    }],
-    exclude: /node_modules/,
-    include: __dirname
-}, {
-    test: /\.css$/,
-    loader: ExtractTextPlugin.extract('style-loader',
-        `css-loader?${[
-            'modules',
-            'localIdentName=' + STYLE_NAME_TEMPLATE,
-            isProd ? 'minimize' : null
-        ].join('&')}`,
-        'postcss-loader')
-}];
+    })
+];
 
-if (isProd) {
-    LOADERS.push({
-        test: /\.html.template/,
-        loader: 'html'
+if (IS_PROD) {
+    plugins.push(
+        new webpack.optimize.DedupePlugin(),
+        new webpack.optimize.UglifyJsPlugin({
+            compressor: {warnings: false},
+            minimize: true
+        })
+    );
+} else {
+    plugins.push(
+        new webpack.HotModuleReplacementPlugin()
+    );
+}
+
+let loaders = [
+    {
+        test: /\.json$/,
+        loader: 'json-loader'
+    },
+    {
+        test: /\.js$/,
+        loader: 'babel',
+        exclude: /node_modules/,
+        include: __dirname,
+        query: {
+            presets: ['es2015', 'stage-0']
+        }
+    },
+    {
+        test: /\.jsx$/,
+        loaders: [
+            {loader: 'react-hot'},
+            {
+                loader: 'babel',
+                query: {
+                    plugins: ['react-require'],
+                    presets: ['es2015', 'react', 'stage-0']
+                }
+            }
+        ],
+        exclude: /node_modules/,
+        include: __dirname
+    }
+];
+
+if (IS_PROD) {
+    loaders.push({
+        test: /\.css$/,
+        loader: ExtractTextPlugin.extract({
+            fallbackLoader: 'style?sourceMap',
+            loader: `css?${[
+                'modules',
+                'localIdentName=' + STYLE_NAME_TEMPLATE,
+                'minimize'
+            ].join('&')}!postcss-loader`
+        })
+    });
+} else {
+    loaders.push({
+        test: /\.css$/,
+        loaders: [
+            'style?sourceMap',
+            `css?${[
+                'modules',
+                'localIdentName=' + STYLE_NAME_TEMPLATE
+            ].join('&')}!postcss-loader`
+        ]
     });
 }
 
 module.exports = {
     // constants
-    STYLE_NAME_TEMPLATE: STYLE_NAME_TEMPLATE,
+    OUTPUT_DIR, STYLE_NAME_TEMPLATE, INDEX_HTML,
 
-    devtool: isProd ? 'none' : 'inline-source-map',
-    entry: ENTRY,
+    devtool: IS_PROD ? 'none' : 'inline-source-map',
+    entry: entry,
     output: {
-        path: path.join(__dirname, 'client-dist'),
-        filename: FileNameTemplate + '.js',
-        publicPath: '/static/'
+        path: path.join(__dirname, OUTPUT_DIR),
+        filename: `${FILENAME_TEMPLATE}.js`,
+        publicPath: '/'
     },
-    plugins: PLUGINS,
+    plugins: plugins,
     resolve: {
-        alias: ALIAS,
-        resolve: {
-            extensions: ['.js', '.jsx', '']
-        }
+        alias: alias,
+        resolve: {extensions: ['.js', '.jsx', '']}
     },
-    module: {
-        loaders: LOADERS
-    },
-    postcss: function() {
-        return [
-            require('postcss-cssnext')()
-        ];
-    }
+    module: {loaders: loaders},
+    postcss: [
+        require('postcss-cssnext')
+    ]
 };

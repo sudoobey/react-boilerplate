@@ -1,18 +1,19 @@
+const IS_PROD = process.env.NODE_ENV !== 'development';
+
 const webpackConfig = require('../webpack.config');
 require('babel-register')({
-    extensions: ['.jsx', '.css'],
+    only: /view\/.*|common\/.*/,
+    extensions: ['.js', '.jsx', '.css'],
     presets: ['es2015', 'react', 'stage-0'],
     plugins: [
-        [
-            'css-modules-transform', {
-                generateScopedName: webpackConfig.STYLE_NAME_TEMPLATE,
-                extensions: ['.css']
-            }
-        ]
+        ['react-require', {extensions: ['.jsx']}],
+        ['css-modules-transform', {
+            generateScopedName: webpackConfig.STYLE_NAME_TEMPLATE,
+            extensions: ['.css']
+        }]
     ]
 });
 
-const isProd = process.env.NODE_ENV !== 'development';
 const path = require('path');
 const requireDir = require('require-dir');
 
@@ -21,14 +22,13 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const app = new Koa();
 
-// body parser
-const bodyParser = require('koa-bodyparser');
-app.use(bodyParser());
-
-// parse qs
+// usefull middlewares
+app.use(require('koa-bodyparser')());
 require('koa-qs')(app);
+// trust proxy
+app.proxy = true;
 
-if (isProd) {
+if (IS_PROD) {
     const compress = require('koa-compress');
     app.use(compress({
         threshold: 2048,
@@ -40,10 +40,7 @@ if (isProd) {
 const logger = require('koa-logger');
 app.use(logger());
 
-// trust proxy
-app.proxy = true;
-
-// Routre controllers
+// API controllers
 const controllers = requireDir('./controllers');
 let apiRouter = new Router({
     prefix: '/api'
@@ -55,23 +52,24 @@ for (let name of Object.keys(controllers)) {
 }
 app.use(apiRouter.routes(), apiRouter.allowedMethods());
 
-// serve static
-let staticRoute = new Router();
-let serve = require('koa-static');
-app.use(staticRoute.routes(), staticRoute.allowedMethods());
-
-if (isProd) {
-    const mount = require('koa-mount');
-    app.use(
-        mount(
-            '/static',
-            serve(path.resolve('client-dist'))
-        )
-    );
-}
-
+// Server-side rendering controller
 let reactRouter = require('./render-router');
 app.use(reactRouter.routes(), reactRouter.allowedMethods());
+
+// Serve prebuilded static
+const serve = require('koa-static');
+const mount = require('koa-mount');
+
+if (IS_PROD) {
+    let distPath = path.join(__dirname, '../client-dist');
+    app.use(mount('/', serve(distPath), {defer: true}));
+} else {
+    let nodeModulesPath = path.join(__dirname, '../node_modules');
+    app.use(mount('/node_modules', serve(nodeModulesPath)));
+    const webpackDev = require('./middlewares-webpack');
+    app.use(webpackDev.webpackDevMiddleware);
+    app.use(webpackDev.webpackHotMiddleware);
+}
 
 const server = http.createServer(app.callback());
 
