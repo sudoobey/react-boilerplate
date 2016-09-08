@@ -6,6 +6,7 @@ require('babel-register')({
     extensions: ['.js', '.jsx', '.css'],
     presets: ['es2015', 'react', 'stage-0'],
     plugins: [
+        'babel-plugin-transform-ensure-ignore',
         ['react-require', {extensions: ['.jsx']}],
         ['css-modules-transform', {
             generateScopedName: webpackConfig.STYLE_NAME_TEMPLATE,

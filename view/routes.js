@@ -1,5 +1,4 @@
-import App from '../view/components/App/App.jsx';
-import About from '../view/components/About/About.jsx';
+import App from './components/App/App.jsx';
 
 export default {
     path: '/',
@@ -7,7 +6,12 @@ export default {
     childRoutes: [
         {
             path: 'about',
-            component: About
+            getComponent: (location, cb) => require.ensure(
+                [],
+                (require) => cb(null,
+                    require('./components/About/About.jsx').default),
+                'page-about'
+            )
         }
     ]
 };

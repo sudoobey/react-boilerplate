@@ -6,6 +6,11 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const os = require('os');
+const CPU_COUNT = os.cpus().length;
+const HappyPack = require('happypack');
+const happyThreadPool = HappyPack.ThreadPool({size: CPU_COUNT});
+
 const STYLE_NAME_TEMPLATE = IS_PROD ? '[hash:base64:5]' : '[name]_[local]_[hash:base64:5]';
 const FILENAME_TEMPLATE = IS_PROD ? '[name].[hash]' : '[name]';
 const INDEX_HTML = './view/index.html';
@@ -31,7 +36,7 @@ let plugins = [
     }),
     new ExtractTextPlugin({
         filename: `${FILENAME_TEMPLATE}.css`,
-        allChunks: true
+        allChunks: false
     }),
     new HtmlWebpackPlugin({
         template: INDEX_HTML,
@@ -43,7 +48,9 @@ let plugins = [
             removeStyleLinkTypeAttributes: true,
             removeScriptTypeAttributes: true
         }
-    })
+    }),
+    new HappyPack({id: 'js', threadPool: happyThreadPool}),
+    new HappyPack({id: 'jsx', threadPool: happyThreadPool})
 ];
 
 if (IS_PROD) {
@@ -56,7 +63,8 @@ if (IS_PROD) {
     );
 } else {
     plugins.push(
-        new webpack.HotModuleReplacementPlugin()
+        new webpack.HotModuleReplacementPlugin(),
+        new HappyPack({id: 'css-dev', threadPool: happyThreadPool})
     );
 }
 
@@ -68,6 +76,7 @@ let loaders = [
     {
         test: /\.js$/,
         loader: 'babel',
+        happy: {id: 'js'},
         exclude: /node_modules/,
         include: __dirname,
         query: {
@@ -86,6 +95,7 @@ let loaders = [
                 }
             }
         ],
+        happy: {id: 'jsx'},
         exclude: /node_modules/,
         include: __dirname
     }
@@ -106,6 +116,7 @@ if (IS_PROD) {
 } else {
     loaders.push({
         test: /\.css$/,
+        happy: {id: 'css-dev'},
         loaders: [
             'style?sourceMap',
             `css?${[
