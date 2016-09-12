@@ -1,41 +1,29 @@
 const IS_PROD = process.env.NODE_ENV !== 'development';
-
-const fs = require('fs');
-const path = require('path');
+const config = require('../config');
+let getApp = null;
+let routes = null;
+if (IS_PROD) {
+    let forServer = require(config.NODE_BUNDLE);
+    getApp = forServer.getApp;
+    routes = forServer.routes;
+} else {
+    require('babel-register')({
+        only: /view\/.*|common\/.*/,
+        plugins: [
+            'system-import-transformer',
+            ['css-modules-transform', {
+                generateScopedName: config.STYLE_NAME_TEMPLATE,
+                extensions: ['.css']
+            }]
+        ]
+    });
+    getApp = require('../view/get-app.jsx').default;
+    routes = require('../view/routes.js').default;
+}
 
 const Router = require('koa-router');
-const getApp = require('../view/get-app.jsx').default;
-const ReactDom = require('react-dom/server');
-const React = require('react');
-const routes = require('../view/routes').default;
 const ReactRouter = require('react-router');
-
-const configureStore = require('../common/configureStore');
-
-const webpackConfig = require('../webpack.config');
-const INDEX_HTML = path.join(webpackConfig.OUTPUT_DIR, 'index.html');
-const INDEX_HTML_STRING = fs.readFileSync(INDEX_HTML).toString();
-
-function renderFullPage(html) {
-    return INDEX_HTML_STRING.replace('{{app}}', html);
-}
-
-function createApp(renderProps) {
-    const store = configureStore();
-    let App = getApp(store);
-    return React.createElement(
-        ReactRouter.RouterContext,
-        renderProps,
-        App
-    );
-}
-
-function renderApp(renderProps) {
-    let initialState = {};
-    let app = createApp(renderProps);
-    let htmlString = ReactDom.renderToString(app, initialState);
-    return renderFullPage(htmlString);
-}
+const {renderApp} = require('./ssr');
 
 let renderRouter = new Router();
 renderRouter.get('*', (ctx, next) => {
@@ -53,7 +41,7 @@ renderRouter.get('*', (ctx, next) => {
                 // your 'not found' component or route respectively, and send a 404 as
                 // below, if you're using a catch-all route.
                 if (IS_PROD) {
-                    ctx.body = renderApp(renderProps);
+                    ctx.body = renderApp(renderProps, getApp, routes);
                 } else {
                     // HACK: HRM don't know about react router,
                     // but we want render index.html if path resolved

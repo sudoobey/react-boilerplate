@@ -1,8 +1,8 @@
 const co = require('co');
-const webpack = require('webpack');
 const PassThrough = require('stream').PassThrough;
 
-const webpackConfig = require('../webpack.config');
+const webpack = require('webpack');
+const webpackConfig = require('../webpack/webpack.config.web-hmr');
 const compiler = webpack(webpackConfig);
 const webpackHotMiddleware = require('webpack-hot-middleware')(compiler);
 const webpackDevMiddleware = require('webpack-dev-middleware')(
