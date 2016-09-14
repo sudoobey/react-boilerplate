@@ -8,7 +8,7 @@ if (module.hot) {
 }
 
 import routes from './routes.js';
-import getApp from './get-app.jsx';
+import getApp from './app.jsx';
 
 match(
     {routes, history: browserHistory},

@@ -17,7 +17,7 @@ if (IS_PROD) {
             }]
         ]
     });
-    getApp = require('../view/get-app.jsx').default;
+    getApp = require('../view/app.jsx').default;
     routes = require('../view/routes.js').default;
 }
 
