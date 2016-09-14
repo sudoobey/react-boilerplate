@@ -1,23 +1,7 @@
-.root {
-    display: block;
-}
-
-.app
-{
-    font-size: 2em;
-}
-
-.active
-{
-    text-decoration: underline;
-    color: red;
-}
-
-.btn
-{
-    all: inherit;
-}
-
 :global body {
     margin: 0;
+}
+
+:global body * {
+    box-sizing: border-box;
 }

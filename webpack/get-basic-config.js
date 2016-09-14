@@ -34,23 +34,17 @@ module.exports = function getBasicConfig(name) {
         })
     ];
 
-    let jsxLoader = {
-        test: /\.jsx$/,
-        happy: {id: `jsx-${name}`},
-        exclude: /node_modules/
-    };
-    if (IS_PROD) {
-        jsxLoader.loader = 'babel';
-    } else {
-        jsxLoader.loaders = ['react-hot', 'babel'];
-    }
-
     let loaders = [
-        jsxLoader,
         {
             test: /\.js$/,
             loader: 'babel',
             happy: {id: `js-${name}`},
+            exclude: /node_modules/
+        },
+        {
+            test: /\.jsx$/,
+            loader: 'babel',
+            happy: {id: `jsx-${name}`},
             exclude: /node_modules/
         },
         {

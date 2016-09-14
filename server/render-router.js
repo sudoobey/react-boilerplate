@@ -11,6 +11,7 @@ if (IS_PROD) {
         only: /view\/.*|common\/.*/,
         plugins: [
             'system-import-transformer',
+            'babel-plugin-transform-ensure-ignore',
             ['css-modules-transform', {
                 generateScopedName: config.STYLE_NAME_TEMPLATE,
                 extensions: ['.css']
@@ -33,6 +34,7 @@ renderRouter.get('*', (ctx, next) => {
             location: ctx.url
         }, (error, redirectLocation, renderProps) => {
             if (error) {
+                console.error('Routing error', error);
                 reject(error);
             } else if (redirectLocation) {
                 ctx.redirect(redirectLocation.pathname);
