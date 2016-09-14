@@ -30,9 +30,9 @@
     "koa-qs": "^2.0.0",
     "koa-router": "^7.0.1",
     "koa-static": "^3.0.0",
-    "react": "^15.1.0",
-    "react-dom": "^15.1.0",
-    "react-lite": "^0.15.14",
+    "react": "^15.3.1",
+    "react-dom": "^15.3.1",
+    "react-lite": "^0.15.18",
     "react-router": "^2.8.1"
   },
   "devDependencies": {
