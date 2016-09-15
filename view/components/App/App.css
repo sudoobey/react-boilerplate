@@ -5,3 +5,15 @@
 :global body * {
     box-sizing: border-box;
 }
+
+:global(:root)
+{
+    --app-main-padding: 10px;
+}
+
+.wrap
+{
+    padding: var(--app-main-padding);
+    height: 100%;
+    width: 100%;
+}

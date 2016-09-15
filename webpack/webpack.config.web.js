@@ -9,13 +9,15 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const config = require('../config');
 
-const cssModulesLoader = {
-    loader: 'css',
-    query: {
-        modules: true,
-        minimize: IS_PROD,
-        localIdentName: config.STYLE_NAME_TEMPLATE
-    }
+const cssLoader = {
+    loaders: [
+        {loader: 'css', query: {
+            modules: true,
+            minimize: IS_PROD,
+            localIdentName: config.STYLE_NAME_TEMPLATE
+        }}
+        // {loader: 'postcss-loader'}
+    ]
 };
 
 let loaders = [];
@@ -24,14 +26,14 @@ if (IS_PROD) {
         test: /\.css$/,
         loader: ExtractTextPlugin.extract({
             fallbackLoader: 'style?sourceMap',
-            loader: cssModulesLoader
+            loader: cssLoader
         })
     });
 } else {
     loaders.push({
         test: /\.css$/,
         happy: {id: `css-dev-${configName}`},
-        loaders: ['style?sourceMap', cssModulesLoader]
+        loaders: ['style?sourceMap', cssLoader]
     });
 }
 
