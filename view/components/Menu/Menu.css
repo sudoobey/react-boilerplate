@@ -8,6 +8,8 @@
     width: 3rem;
     height: 3rem;
     background: white;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .nav
@@ -17,6 +19,7 @@
     position: absolute;
     width: 100%;
     height: 100%;
+    right: 0;
     padding: var(--frame_width);
     background-color: rgba(0,0,0,0.5);
     transform: translateX(100%);
@@ -34,4 +37,11 @@
     color: white;
     font-size: 2em;
     margin: 1em 0;
+}
+
+@media (min-width: 600px) {
+    .nav
+    {
+        width: 50vw;
+    }
 }
