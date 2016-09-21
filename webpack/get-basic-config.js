@@ -38,14 +38,14 @@ module.exports = function getBasicConfig(name) {
         {
             test: /\.js$/,
             loader: 'babel',
-            happy: {id: `js-${name}`},
-            exclude: /node_modules/
+            exclude: /node_modules/,
+            happy: {id: `js-${name}`}
         },
         {
             test: /\.jsx$/,
             loader: 'babel',
-            happy: {id: `jsx-${name}`},
-            exclude: /node_modules/
+            exclude: /node_modules/,
+            happy: {id: `jsx-${name}`}
         },
         {
             test: /\.json$/,
@@ -65,9 +65,6 @@ module.exports = function getBasicConfig(name) {
             ...basicPlugins,
             ...(IS_PROD ? optimizationsPlugins : [])
         ],
-        module: {loaders: loaders},
-        postcss: [
-            require('postcss-cssnext')
-        ]
+        module: {loaders: loaders}
     };
 };

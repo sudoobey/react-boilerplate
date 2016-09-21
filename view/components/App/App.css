@@ -6,7 +6,7 @@
     box-sizing: border-box;
 }
 
-:global(:root)
+:root
 {
     --app-main-padding: 10px;
 }

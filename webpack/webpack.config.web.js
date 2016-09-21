@@ -9,16 +9,17 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const config = require('../config');
 
-const cssLoader = {
-    loaders: [
-        {loader: 'css', query: {
-            modules: true,
-            minimize: IS_PROD,
-            localIdentName: config.STYLE_NAME_TEMPLATE
-        }}
-        // {loader: 'postcss-loader'}
-    ]
-};
+const cssLoaders = [
+    {loader: 'css-loader', query: {
+        modules: true, minimize: IS_PROD, sourceMap: IS_PROD,
+        localIdentName: config.STYLE_NAME_TEMPLATE
+    }},
+    {loader: 'postcss-loader'}
+];
+
+const postCssPlugins = [
+    require('postcss-cssnext')
+];
 
 let loaders = [];
 if (IS_PROD) {
@@ -26,14 +27,14 @@ if (IS_PROD) {
         test: /\.css$/,
         loader: ExtractTextPlugin.extract({
             fallbackLoader: 'style?sourceMap',
-            loader: cssLoader
+            loader: cssLoaders
         })
     });
 } else {
     loaders.push({
         test: /\.css$/,
-        happy: {id: `css-dev-${configName}`},
-        loaders: ['style?sourceMap', cssLoader]
+        loaders: ['style-loader', ...cssLoaders],
+        happy: {id: `css-dev-${configName}`}
     });
 }
 
@@ -53,7 +54,6 @@ module.exports = merge.smart(basicConfig, {
     output: {
         path: config.OUTPUT_DIR_WEB
     },
-    commonPlugins,  // export for hmr
     plugins: [
         ...commonPlugins,
         new HtmlWebpackPlugin({
@@ -75,5 +75,7 @@ module.exports = merge.smart(basicConfig, {
             'react': 'react-lite',
             'react-dom': 'react-lite'
         } : {}
-    }
+    },
+    postcss: postCssPlugins,
+    commonPlugins  // for hmr
 });

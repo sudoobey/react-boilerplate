@@ -9,7 +9,6 @@ const config = require('../config');
 
 // usefull middlewares
 app.use(require('koa-bodyparser')());
-require('koa-qs')(app);
 // trust proxy
 app.proxy = true;
 
