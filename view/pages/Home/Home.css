@@ -3,7 +3,7 @@
     background: grey;
 }
 
-.main > section
+.projects > section
 {
     width: 100%;
     height: calc(100vh / 2);
@@ -11,7 +11,7 @@
 }
 
 @media (max-width: 600px) {
-    .main > section
+    .projects > section
     {
         height: 100%;
     }

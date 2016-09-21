@@ -1,14 +1,15 @@
-@import url('./Theme.css');
+@import url('./variables.css');
 
 body {
     margin: 0;
+    overflow: hidden;
 }
 
 body * {
     box-sizing: border-box;
 }
 
-.wrap
+.main
 {
     position: absolute;
     overflow-y: scroll;

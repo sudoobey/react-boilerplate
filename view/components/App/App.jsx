@@ -7,9 +7,9 @@ export default class App extends React.Component {
     render() {
         return (
             <div>
-                <div className={style.wrap}>
+                <main className={style.main}>
                     {this.props.children}
-                </div>
+                </main>
                 <Menu/>
             </div>
         );
