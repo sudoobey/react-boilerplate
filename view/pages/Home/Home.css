@@ -1,13 +1,18 @@
 .section
 {
-    width: 100%;
-    height: calc((100vh / 3) - var(--app-main-padding));
     background: grey;
 }
 
+.main > section
+{
+    width: 100%;
+    height: calc(100vh / 2);
+    background: green;
+}
+
 @media (max-width: 600px) {
-    .section
+    .main > section
     {
-        height: calc(100vh - (var(--app-main-padding) * 2));
+        height: 100%;
     }
 }

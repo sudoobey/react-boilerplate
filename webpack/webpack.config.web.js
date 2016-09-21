@@ -12,13 +12,17 @@ const config = require('../config');
 const cssLoaders = [
     {loader: 'css-loader', query: {
         modules: true, minimize: IS_PROD, sourceMap: IS_PROD,
-        localIdentName: config.STYLE_NAME_TEMPLATE
+        localIdentName: config.STYLE_NAME_TEMPLATE,
+        importLoaders: 1
     }},
     {loader: 'postcss-loader'}
 ];
 
 const postCssPlugins = [
-    require('postcss-cssnext')
+    require('postcss-import'),  // HACK для того, чтобы работали custom-properties
+    require('postcss-custom-properties'),
+    require('postcss-calc'),
+    require('autoprefixer')
 ];
 
 let loaders = [];

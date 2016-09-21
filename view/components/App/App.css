@@ -1,19 +1,19 @@
-:global body {
+@import url('./Theme.css');
+
+body {
     margin: 0;
 }
 
-:global body * {
+body * {
     box-sizing: border-box;
-}
-
-:root
-{
-    --app-main-padding: 10px;
 }
 
 .wrap
 {
-    padding: var(--app-main-padding);
-    height: 100%;
-    width: 100%;
+    position: absolute;
+    overflow-y: scroll;
+    top: var(--frame_width);
+    left: var(--frame_width);
+    right: var(--frame_width);
+    bottom: var(--frame_width);
 }
