@@ -1,17 +1,5 @@
 @import url('../App/variables.css');
 
-.nav_button
-{
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 3rem;
-    height: 3rem;
-    background: white;
-    user-select: none;
-    -webkit-user-select: none;
-}
-
 .nav
 {
     display: flex;
@@ -27,9 +15,52 @@
     transition-duration: 0.5s;
 }
 
-.nav--active
+.active > .nav
 {
     transform: translateX(0);
+}
+
+.nav_button
+{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 3rem;
+    height: 3rem;
+    background: white;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.nav_close_region
+{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: black;
+    opacity: 0;
+    pointer-events: none;
+    transition-property: opacity;
+    transition-duration: 0.5s;
+}
+
+.active > .nav_close_region
+{
+    opacity: 0.2;
+    pointer-events: all;
+}
+
+.nav_open_region
+{
+    position: absolute;
+    height: 100%;
+    width: 10px;
+    left: -10px;
+}
+
+.active .nav_open_region
+{
+    pointer-events: none;
 }
 
 .nav__link
@@ -44,4 +75,52 @@
     {
         width: 50vw;
     }
+}
+
+.menu_icon
+{
+    position: relative;
+    margin: 3px 10px;
+}
+
+.menu_icon__stick
+{
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: black;
+    transition-property: all;
+    transition-duration: 0.3s;
+}
+
+.menu_icon__stick:nth-child(1)
+{
+    top: 10px;
+}
+
+.menu_icon__stick:nth-child(2)
+{
+    top: 20px;
+}
+
+.menu_icon__stick:nth-child(3)
+{
+    top: 30px;
+}
+
+.active .menu_icon__stick:nth-child(1)
+{
+    transform: rotate(-45deg);
+    top: 20px;
+}
+
+.active .menu_icon__stick:nth-child(2)
+{
+    opacity: 0;
+}
+
+.active .menu_icon__stick:nth-child(3)
+{
+    transform: rotate(45deg);
+    top: 20px;
 }

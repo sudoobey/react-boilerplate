@@ -2,10 +2,6 @@ import React from 'react';
 import {Link} from 'react-router';
 import styles from './Menu.css';
 
-// import {MorphReplace} from 'react-svg-morph';
-import IconMenu from 'react-icons/lib/md/menu';
-import IconClose from 'react-icons/lib/md/close';
-
 import classNames from 'classnames/bind';
 const cx = classNames.bind(styles);
 
@@ -21,16 +17,32 @@ export default class App extends React.Component {
         this.setState({active: !this.state.active});
     }
 
+    hideMenu() {
+        this.setState({active: false});
+    }
+
+    openMenu() {
+        this.setState({active: true});
+    }
+
     render() {
         let active = this.state.active;
         let toggle = this.toggleMenu.bind(this);
+        let hide = this.hideMenu.bind(this);
+        let open = this.openMenu.bind(this);
         return (
-            <nav>
-                <div className={cx('nav', {'nav--active': active})}>
+            <nav className={cx({active})}>
+                <div onClick={hide} className={styles.nav_close_region}/>
+                <div className={styles.nav}>
+                    <div className={styles.nav_open_region} onTouchStart={open}/>
                     <Link className={styles.nav__link} to="#">wtf</Link>
                 </div>
                 <div className={styles.nav_button} onClick={toggle}>
-                    {active ? <IconMenu size={50}/> : <IconClose size={50}/>}
+                    <div className={styles.menu_icon}>
+                        <div className={styles.menu_icon__stick}/>
+                        <div className={styles.menu_icon__stick}/>
+                        <div className={styles.menu_icon__stick}/>
+                    </div>
                 </div>
             </nav>
         );
