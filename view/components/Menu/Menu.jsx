@@ -5,7 +5,7 @@ import styles from './Menu.css';
 import classNames from 'classnames/bind';
 const cx = classNames.bind(styles);
 
-export default class App extends React.Component {
+export default class Menu extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -34,7 +34,8 @@ export default class App extends React.Component {
             <nav className={cx({active})}>
                 <div onClick={hide} className={styles.nav_close_region}/>
                 <div className={styles.nav}>
-                    <div className={styles.nav_open_region} onTouchStart={open}/>
+                    <div className={styles.nav_open_region}
+                        onTouchStart={open}/>
                     <Link className={styles.nav__link} to="#">wtf</Link>
                 </div>
                 <div className={styles.nav_button} onClick={toggle}>

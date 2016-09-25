@@ -1,8 +1,14 @@
 @import url('./variables.css');
 
+html
+{
+    height: 100%;
+    overflow: hidden;
+}
+
 body {
     margin: 0;
-    overflow: hidden;
+    overflow: auto;
 }
 
 body * {
