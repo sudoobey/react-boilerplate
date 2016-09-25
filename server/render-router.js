@@ -1,11 +1,8 @@
 const IS_PROD = process.env.NODE_ENV !== 'development';
 const config = require('../config');
-let getApp = null;
-let routes = null;
+let serverViewBundle = null;
 if (IS_PROD) {
-    let forServer = require(config.NODE_BUNDLE);
-    getApp = forServer.getApp;
-    routes = forServer.routes;
+    serverViewBundle = require(config.NODE_BUNDLE);
 } else {
     require('babel-register')({
         only: /view\/.*|common\/.*/,
@@ -18,9 +15,9 @@ if (IS_PROD) {
             }]
         ]
     });
-    getApp = require('../view/app.jsx').default;
-    routes = require('../view/routes.js').default;
+    serverViewBundle = require('../view/entry-node');
 }
+const {routes} = serverViewBundle;
 
 const Router = require('koa-router');
 const ReactRouter = require('react-router');
@@ -43,7 +40,7 @@ renderRouter.get('*', (ctx, next) => {
                 // your 'not found' component or route respectively, and send a 404 as
                 // below, if you're using a catch-all route.
                 if (IS_PROD) {
-                    ctx.body = renderApp(renderProps, getApp, routes);
+                    ctx.body = renderApp(renderProps, serverViewBundle);
                 } else {
                     // HACK: HRM don't know about react router,
                     // but we want render index.html if path resolved

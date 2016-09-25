@@ -3,7 +3,8 @@ const ReactRouter = require('react-router');
 const {renderApp} = require('./server/ssr');
 
 const confg = require('./config');
-const {routes, getApp} = require(confg.NODE_BUNDLE);
+const serverViewBundle = require(confg.NODE_BUNDLE);
+const {routes} = serverViewBundle;
 const path = require('path');
 const fse = require('fs-extra');
 
@@ -21,7 +22,7 @@ for (let location of locations) {
             // You can also check renderProps.components or renderProps.routes for
             // your 'not found' component or route respectively, and send a 404 as
             // below, if you're using a catch-all route.
-            let fullPage = renderApp(renderProps, getApp, routes);
+            let fullPage = renderApp(renderProps, serverViewBundle);
             let filePath = path.join(
                 confg.OUTPUT_DIR_WEB, location, 'index.html');
             console.log(`location: ${location} write file: ${filePath}`);
