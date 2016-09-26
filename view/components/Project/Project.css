@@ -24,7 +24,7 @@
     height: 100%;
     background: grey;
     transform-origin: bottom;
-    transition-duration: 0.2s;
+    transition-duration: 0.3s;
     transition-delay: -0.1s;
     transition-property: none;
     animation-timing-function: cubic-bezier(0, 1.1, 0.94, 0.96);
