@@ -35,7 +35,7 @@ function renderApp(renderProps, viewBundle) {
     }
     fullPage = fullPage.replace(
         ' {helmet_htmlattributes}',
-        params.helmet_htmlAttributes
+        params.helmet_htmlAttributes || ''
     );
     return fullPage;
 }
