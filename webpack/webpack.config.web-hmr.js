@@ -11,23 +11,12 @@ module.exports = merge.smart(webConfig, {
         {
             test: /\.jsx$/,
             loaders: ['react-hot'],
-            happy: {id: 'jsx-web'},
             exclude: /node_modules/
         }
     ]},
     plugins: [
-        ...webConfig.commonPlugins,
+        webConfig.plugins.slice(0, webConfig.plugins.length - 1),
         new webpack.HotModuleReplacementPlugin(),
-        new HtmlWebpackPlugin({
-            template: config.INDEX_TMPL,
-            minify: {
-                removeAttributeQuotes: true,
-                minifyJS: true,
-                html5: true,
-                collapseWhitespace: true,
-                removeStyleLinkTypeAttributes: true,
-                removeScriptTypeAttributes: true
-            }
-        })
+        webConfig.plugins[webConfig.plugins.length - 1]
     ]
 });

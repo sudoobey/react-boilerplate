@@ -3,7 +3,7 @@ const ReactRouter = require('react-router');
 const {renderApp} = require('./server/ssr');
 
 const confg = require('./config');
-const serverViewBundle = require(confg.NODE_BUNDLE);
+const serverViewBundle = require(confg.NODE_BUNDLE).default;
 const {routes} = serverViewBundle;
 const path = require('path');
 const fse = require('fs-extra');
